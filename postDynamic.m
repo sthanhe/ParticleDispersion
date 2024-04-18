@@ -5,17 +5,17 @@
 %Part of the paper:
 %
 %Thanheiser, S.; Haider, M.
-%Particle Mass Diffusion Model for Level Control of Bubbling Fluidized Beds
-%with Horizontal Particle Flow
-%Powder Technology 2023
+%Dispersion Model for Level Control of Bubbling Fluidized Beds with 
+%Particle Cross-Flow
+%Applied Thermal Energy 2024
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
-%https://doi.org/10.5281/zenodo.7924694
+%https://doi.org/10.5281/zenodo.7924693
 %
 %All required files for this function can be found in the software
 %repository:
-%https://doi.org/10.5281/zenodo.xxxxxxx
+%https://doi.org/10.5281/zenodo.7948224
 %
 %
 %
@@ -33,8 +33,6 @@
 
 function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     %% Common parameters
-    baffle=63;  %Index of baffle position
-
     %Figure title:
     titleText=['Step Response, Test ',num2str(figidx),...
                 ', $w_{e}$/$w_{mf}$=',num2str(round(flow.FG2-1,1))];
@@ -42,12 +40,12 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     
     %% Controller response
     hsim=timeseries2timetable(out.h);
-    hcont=hsim{:,1}(:,baffle);          %Controlled (simulated) bed level h_4
+    hcont=hsim{:,1}(:,posBedLevel(3));  %Controlled (simulated) bed level h_4
     
     
     %Set up figure
-    fig8=figure(figidx);
-    clf(fig8);
+    fig9=figure(figidx);
+    clf(fig9);
     ax=gca();
     box(ax,'on');
     hold(ax,'on');
@@ -61,25 +59,25 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     %Configure and save figure
     legend(ax,{'Measured','Simulated','Setpoint'});
 
-    t8=title(ax,titleText,'Interpreter','latex');
+    t9=title(ax,titleText,'Interpreter','latex');
     xlabel(ax,'Time (HH:MM:SS)');
     ylabel(ax,'Bed Level h_4 (m)');
 
-    fig8.Units='centimeters';
-    fig8.Position=[10,5,17,8.5];
+    fig9.Units='centimeters';
+    fig9.Position=[0.02,12.18,17,8.5];
     ax.XLim=[0,max(dyn.Time)];
 
-    exportgraphics(fig8,[dirFigures,filesep,'stepRespContr',num2str(figidx),'.tiff']);
+    exportgraphics(fig9,[dirFigures,filesep,'stepRespContr',num2str(figidx),'.tiff']);
 
 
     %% Actuating value
     Ysim=timeseries2timetable(out.Ypid);
-    Y=squeeze(Ysim.Data(:,:,1))';           %Simulated actuating value
+    Y=Ysim.Data(:,1);           %Simulated actuating value
 
 
     %Set up figure
-    fig9=figure(figidx+100);
-    clf(fig9);
+    fig10=figure(figidx+100);
+    clf(fig10);
     ax=gca();
     box(ax,'on');
     hold(ax,'on');
@@ -94,15 +92,15 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     %Configure and save figure
     legend(ax,{'Measured','Simulated'});
 
-    t9=title(ax,titleText,'Interpreter','latex');
+    t10=title(ax,titleText,'Interpreter','latex');
     xlabel(ax,'Time (HH:MM:SS)');
     ylabel(ax,'Valve Actuating Value (-)');
 
-    fig9.Units='centimeters';
-    fig9.Position=[10,5,17,8.5];
+    fig10.Units='centimeters';
+    fig10.Position=[0.02,0.83,17,8.5];
     ax.XLim=[0,max(dyn.Time)];
 
-    exportgraphics(fig9,[dirFigures,filesep,'stepRespValve',num2str(figidx),'.tiff']);
+    exportgraphics(fig10,[dirFigures,filesep,'stepRespValve',num2str(figidx),'.tiff']);
 
 
     %% Other bed level responses
@@ -111,8 +109,8 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
 
 
     %Set up figure
-    fig10=figure(figidx+200);
-    clf(fig10);
+    fig11=figure(figidx+200);
+    clf(fig11);
     ax=gca();
     box(ax,'on');
     hold(ax,'on');
@@ -139,34 +137,34 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     legend(ax,legItems,{'h_6','h_5','h_4','Measured','Simulated'},'Location','bestoutside');
 
     %Configure and save figure
-    t10=title(ax,titleText,'Interpreter','latex');
+    t11=title(ax,titleText,'Interpreter','latex');
     xlabel(ax,'Time (HH:MM:SS)');
     ylabel(ax,'Bed Level (m)');
 
-    fig10.Units='centimeters';
-    fig10.Position=[10,5,17,8.5];
+    fig11.Units='centimeters';
+    fig11.Position=[23.62,12.18,17,8.5];
     ax.XLim=[0,max(dyn.Time)];
     ax.YLim=[min(hmeas,[],'all')*0.85,max(hmeas,[],'all')*1.05]+hBed;
 
-    ax2=axes(fig10,'Units','centimeters','Position',[12.5,1.25,3.6,3.59]);
+    ax2=axes(fig11,'Units','centimeters','Position',[12.5,1.25,3.6,3.59]);
     imshow([dirFigures,filesep,'StepResponseFigureInsert.tiff'],'Parent',ax2,'InitialMagnification','fit','Interpolation','bilinear','Reduce',false);
 
-    exportgraphics(fig10,[dirFigures,filesep,'stepRespAll',num2str(figidx),'.tiff']);
+    exportgraphics(fig11,[dirFigures,filesep,'stepRespAll',num2str(figidx),'.tiff']);
 
 
     %% Export graphics for paper separately
-    if figidx==1
-        delete([t8,t9,t10]);    %Delete titles
+    if figidx==9
+        delete([t9,t10,t11]);    %Delete titles
 
         %Resave as tiff
-        exportgraphics(fig8,[dirFigures,filesep,'Figure8.tiff']);
         exportgraphics(fig9,[dirFigures,filesep,'Figure9.tiff']);
         exportgraphics(fig10,[dirFigures,filesep,'Figure10.tiff']);
+        exportgraphics(fig11,[dirFigures,filesep,'Figure11.tiff']);
 
         %Save as eps
-        exportgraphics(fig8,[dirFigures,filesep,'Figure8.eps']);
         exportgraphics(fig9,[dirFigures,filesep,'Figure9.eps']);
         exportgraphics(fig10,[dirFigures,filesep,'Figure10.eps']);
+        exportgraphics(fig11,[dirFigures,filesep,'Figure11.eps']);
     end
 
 

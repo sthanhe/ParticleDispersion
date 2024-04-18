@@ -5,17 +5,17 @@
 %Part of the paper:
 %
 %Thanheiser, S.; Haider, M.
-%Particle Mass Diffusion Model for Level Control of Bubbling Fluidized Beds
-%with Horizontal Particle Flow
-%Powder Technology 2023
+%Dispersion Model for Level Control of Bubbling Fluidized Beds with 
+%Particle Cross-Flow
+%Applied Thermal Energy 2024
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
-%https://doi.org/10.5281/zenodo.7924694
+%https://doi.org/10.5281/zenodo.7924693
 %
 %All required files for this script can be found in the software
 %repository:
-%https://doi.org/10.5281/zenodo.xxxxxxx
+%https://doi.org/10.5281/zenodo.7948224
 %
 %
 %
@@ -56,7 +56,7 @@ rho_p=2650;         %Particle density
 eps_mf=0.45;        %Porosity at minimum fluidization conditions
 
 href=1;             %Reference height (mass diffusivity)
-baffleCorr=[1,1];   %Baffle correction factor
+% baffleCorr=[1,1,1];   %Baffle correction factor
 
 %Air box volumes, measured from CAD
 VABs=NaN(1,length(xChambers));
@@ -90,6 +90,12 @@ posBedLevel=sort([lCum-xPress./2,lCum+xPress./2]);
 posBedLevel=round(interp1(x,1:n,posBedLevel));      %Cell indices in which the bed level gets measured
 posBedLevelForward=posBedLevel(3:2:end);            %Cell indices of bed level measurements when the direction is forward (left to right)
 posBedLevelReverse=posBedLevel(2:2:end-1);          %Cell indices of bed level measurements when the direction is reverse (right to left)
+
+
+%% Simulation time
+minSimTime=240;      %Minimum simulation time (seconds)
+maxSimTime=1200;    %Maximum simulation time (seconds)
+statCond=1e-6;      %Condition for stationary status as a value of PhiDot
 
 
 

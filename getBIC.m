@@ -5,17 +5,17 @@
 %Part of the paper:
 %
 %Thanheiser, S.; Haider, M.
-%Particle Mass Diffusion Model for Level Control of Bubbling Fluidized Beds
-%with Horizontal Particle Flow
-%Powder Technology 2023
+%Dispersion Model for Level Control of Bubbling Fluidized Beds with 
+%Particle Cross-Flow
+%Applied Thermal Energy 2024
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
-%https://doi.org/10.5281/zenodo.7924694
+%https://doi.org/10.5281/zenodo.7924693
 %
 %All required files for this function can be found in the software
 %repository:
-%https://doi.org/10.5281/zenodo.xxxxxxx
+%https://doi.org/10.5281/zenodo.7948224
 %
 %
 %
@@ -32,7 +32,8 @@
 %   - loadGeometry.m
 
 
-function [bc,rho,mAC,HAC,mAB]=getBIC(flow,PIDset)
+function [bc,Phi,mAC,HAC,mAB]=getBIC(flow)
+    %% Basic geometry
     loadGeometry;
 
 
@@ -41,36 +42,36 @@ function [bc,rho,mAC,HAC,mAB]=getBIC(flow,PIDset)
     
     Time=duration(0,0,0);   %Constant values
     
-    Tbed=vals2cells(x,Time,flow.Tleft,flow.Tcenter,flow.Tright,nChambers);             %Temperature distribution
+    Tbed=vals2cells(x,Time,flow.Tleft,flow.Tcenter,flow.Tright,nChambers);          %Temperature distribution
     poro=vals2cells(x,Time,flow.epsLeft,flow.epsCenter,flow.epsRight,nChambers);    %Porosity distribution
     
     
     mDotSand=zeros(1,n);
     mDotSand(1:nChambers(1))=repmat(flow.mDotS./(deltaX*nChambers(1)),1,nChambers(1));
-    q=timetable(Time,mDotSand);     %Sand flow, distributed evenly across inlet chamber
+    S=timetable(Time,mDotSand);     %Sand flow, distributed evenly across inlet chamber
     
 
-    mDotABin=timetable(Time,[flow.air1,flow.air2,flow.air3,flow.air4]);  %Air mass flows
+    mDotABin=timetable(Time,flow{1,compose('air%d',1:nABs)});  %Air mass flows
 
-    hSet=timetable(Time,PIDset);     %PID controller setpoint
+    hSet=timetable(Time,flow{1,compose('AC%dset',1:nACs)});     %PID controller setpoint
 
 
     %Set up dataset
     bc=Simulink.SimulationData.Dataset;
     bc=addElement(bc,Tbed,'Tbed');
-    bc=addElement(bc,q,'q');
+    bc=addElement(bc,S,'S');
     bc=addElement(bc,poro,'poro');
     bc=addElement(bc,hSet,'hSet');
     bc=addElement(bc,mDotABin,'mDotABin');
     
 
     %% Initial conditions
-    h=repmat(700e-3,1,n);   %Sand levels
+    h=repmat(500e-3,1,n);   %Sand levels
     Tbed1=Tbed{1,1};        %Bed temperature
     
     
     %Fluidized bed
-    rho=h./href.*rho_p.*(1-poro{1,1});     %Mass density
+    Phi=h./href.*rho_p.*(1-poro{1,1});     %Fictional density
     
     
     %Air cushions

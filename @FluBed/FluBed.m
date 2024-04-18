@@ -5,13 +5,13 @@
 %Part of the paper:
 %
 %Thanheiser, S.; Haider, M.
-%Particle Mass Diffusion Model for Level Control of Bubbling Fluidized Beds
-%with Horizontal Particle Flow
-%Powder Technology 2023
+%Dispersion Model for Level Control of Bubbling Fluidized Beds with 
+%Particle Cross-Flow
+%Applied Thermal Energy 2024
 %
 %All required files for this class can be found in the software
 %repository:
-%https://doi.org/10.5281/zenodo.xxxxxxx
+%https://doi.org/10.5281/zenodo.7948224
 %
 %
 %
@@ -170,21 +170,31 @@ classdef FluBed
         end
 
 
-        function Gamma=Gamma(w,href,d_p,rho_p,p,T)
-            %Mass diffusivity
-            persistent C a href0
-            if isempty(C)
-                C=24968.3343446693;
-                a=1.07653015217829;
-                href0=1;
+        function D=D(w,w_p,d_p,rho_p,p,T)
+            %Particle dispersion coefficient
+            persistent c eps2 eps3 epsAr
+            if isempty(c)
+                c=19030.1124724027;
+                eps2=1.08175825313772;
+                eps3=-3.62266055421733;
+                epsAr=0.109738530498836;
             end
-            
-            wmf=FluBed.wmf(d_p,rho_p,p,T);
-            pi2=(w-wmf)./wmf;
+
+            den=sqrt(d_p.*FluBed.g);
+
+            pi2=(w-FluBed.wmf(d_p,rho_p,p,T))./den;
+            pi3=w_p./den;
+            Ar=FluBed.Ar(d_p,rho_p,p,T);
+
 
             idx=pi2>0;
-            Gamma=zeros(size(pi2));
-            Gamma(idx)=C.*href./href0.*pi2(idx).^a.*wmf(idx).*d_p;
+            D=zeros(size(pi2));
+            if any(idx)
+                D(idx)=c.*d_p.*den.*...
+                        pi2(idx).^eps2.*...
+                        (1+pi3(idx)).^eps3.*...
+                        Ar(idx).^epsAr;
+            end
         end
     end
     

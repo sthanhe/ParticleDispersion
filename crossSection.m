@@ -5,40 +5,40 @@
 %Part of the paper:
 %
 %Thanheiser, S.; Haider, M.
-%Particle Mass Diffusion Model for Level Control of Bubbling Fluidized Beds
-%with Horizontal Particle Flow
-%Powder Technology 2023
+%Dispersion Model for Level Control of Bubbling Fluidized Beds with 
+%Particle Cross-Flow
+%Applied Thermal Energy 2024
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
-%https://doi.org/10.5281/zenodo.7924694
+%https://doi.org/10.5281/zenodo.7924693
 %
 %All required files for this script can be found in the software
 %repository:
-%https://doi.org/10.5281/zenodo.xxxxxxx
+%https://doi.org/10.5281/zenodo.7948224
 %
 %
 %
 %This script calculates the relativ free cross section mentioned in the 
-%paper as a possible future parameter in the mass diffusivity model.
+%paper as a possible future parameter in the particle dispersion model.
 %
 %
-%Requires the file "stat_Sum.csv" that summarizes the mass diffusivity
-%measurements, which gets created by the script "calcMassDiff" and stored 
-%in the dirStationary folder ("DataStationary" by default).
+%Requires the file "stat_SumPrep.csv" that summarizes the particle 
+%dispersion measurements, which gets created by the script "prepStatic" 
+%and stored in the dirStationary folder ("../DataStationary" by default).
 %
 %Required products:
 %   - MATLAB, version 9.14
 %Necessary files, classes, functions, and scripts:
-%   - stat_Sum.csv
+%   - stat_SumPrep.csv
 
 
 %% Set data directory
-dirStationary='DataStationary';     %Path to directory where stat_Sum.csv is located
+dirStationary='../DataStationary';     %Path to directory where stat_Sum.csv is located
 
 
 %% Load data
-flow=readtable([dirStationary,filesep,'stat_Sum.csv']);
+flow=readtable([dirStationary,filesep,'stat_SumPrep.csv']);
 
 
 %% Calculations

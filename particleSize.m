@@ -5,17 +5,17 @@
 %Part of the paper:
 %
 %Thanheiser, S.; Haider, M.
-%Particle Mass Diffusion Model for Level Control of Bubbling Fluidized Beds
-%with Horizontal Particle Flow
-%Powder Technology 2023
+%Dispersion Model for Level Control of Bubbling Fluidized Beds with 
+%Particle Cross-Flow
+%Applied Thermal Energy 2024
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
-%https://doi.org/10.5281/zenodo.7924694
+%https://doi.org/10.5281/zenodo.7924693
 %
 %All required files for this script can be found in the software
 %repository:
-%https://doi.org/10.5281/zenodo.xxxxxxx
+%https://doi.org/10.5281/zenodo.7948224
 %
 %
 %
@@ -32,7 +32,7 @@
 
 
 %% Set figure directory
-dirFigures='Figures';       %Path to directory where figures should be stored
+dirFigures='../Figures';    %Path to directory where figures should be stored
 
 %Create directory if it does not exist
 if ~isfolder(dirFigures)
@@ -59,9 +59,9 @@ plot(ax,[mesh;meshmean],resid);
 
 legend(ax,{'Sieve','Linear'},'Location','best');
 
-title(ax,'Particle size distribution, GRANUSIL, Wedron IL \#801, Grade 7020','Interpreter','latex');
-xlabel(ax,'Mesh size (m)','Interpreter','latex');
-ylabel(ax,'Retained mass fraction (-)','Interpreter','latex');
+title(ax,'Particle size distribution, GRANUSIL, Wedron IL #801, Grade 7020');
+xlabel(ax,'Mesh size (m)');
+ylabel(ax,'Retained mass fraction (-)');
 
 fig.Units='centimeters';
 fig.Position=[10,5,17,8.5];
