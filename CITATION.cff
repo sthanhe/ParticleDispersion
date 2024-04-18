@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: Particle Dispersion Model Software
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Stefan
+    family-names: Thanheiser
+    email: stefan.thanheiser@tuwien.ac.at
+    affiliation: TU Wien
+    orcid: https://orcid.org/0000-0003-2765-1156
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.7924693
+    description: Zenodo-link to newest version
+abstract: Software repository for the particle dispersion model.
+keywords:
+  - bubbling fluidized bed
+  - fluidized bed heat exchanger
+  - horizontal mixing
+  - particle dispersion
+  - particle cross-flow
+  - bed level control
+license: GPL-3.0
