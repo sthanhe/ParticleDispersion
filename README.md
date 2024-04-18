@@ -1,4 +1,4 @@
-# ParticleDiffusivity
+# ParticleDispersion
 By Stefan Thanheiser: https://orcid.org/0000-0003-2765-1156
 
 
