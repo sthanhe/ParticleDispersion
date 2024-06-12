@@ -27,18 +27,21 @@
 %dispersion measurements, which gets created by the script "prepStatic" 
 %and stored in the dirStationary folder ("../DataStationary" by default).
 %
-%Required products:
-%   - MATLAB, version 9.14
-%   - Simulink, version 10.7
-%   - Simulink Real-Time, version 8.2
-%   - Stateflow, version 10.8
+%Required products, version 24.1:
+%   - MATLAB
+%   - Simulink
+%   - Requirements Toolbox
+%   - Simulink Real-Time
+%   - Stateflow
 %Necessary files, classes, functions, and scripts:
 %   - @DryAir
 %   - @FluBed
 %   - @implExp
 %   - @Sinter
 %   - getBIC.m
+%   - mdlPostLoadFx.m
 %   - loadGeometry.m
+%   - getMdotSstatic.m
 %   - postStatic.m
 %   - dynamicModel.slx
 %   - stat_SumPrep.csv
@@ -56,22 +59,19 @@ end
 
 %% Load
 %Dynamic model, activate fast restart
-load_system('dynamicModel');
-set_param('dynamicModel',"FastRestart","on");
-cleanup=onCleanup(@() set_param('dynamicModel',"FastRestart","off"));
+mdl='dynamicModel';
+sys=load_system(mdl);
+mdlPostLoadFx;
+
+set_param(mdl,"FastRestart","on");
+cleanup=onCleanup(@() set_param(mdl,"FastRestart","off"));
+
 
 %Data
 flow=readtable([dirStationary,filesep,'stat_SumPrep.csv']);
-baffleMat=flow{:,compose('baffleCorr%d',1:3)};  %Baffle correction factor matrix
+baffleMat=flow{:,compose('baffleCorr%d',1:nABs-1)};  %Baffle correction factor matrix
 
 run=1:height(flow);   %Runs to analyze
-
-
-%% Constant input values
-loadGeometry;           %Basic geometry
-gates=[false,true];     %Gates (open / close)
-direction=true;         %Operating direction, true=forward (left to right)
-Y0=ones(1,nACs);        %AC valve rate limiter initial condition
 
 
 %% Initial state for faster simulations
@@ -79,11 +79,12 @@ p0=flow.p0(1);              %Ambient pressure
 baffleCorr=baffleMat(1,:);  %Baffle correction factors
 Phigate=flow.Phigate(1);    %Weir boundary condition
 
-[bc,Phi,mAC,HAC,mAB]=getBIC(flow(1,:));     %Get other boundary and initial conditions
+[bc,Phi,mAC,HAC,mAB]=getBIC(flow(1,:),direction);     %Get other boundary and initial conditions
 
 
 %Simulate
-out=sim('dynamicModel','LoadExternalInput','on','ExternalInput','bc');
+out=sim(sys,'LoadExternalInput','on','ExternalInput','bc',...
+            'LoadInitialState','off');
 xInit=out.xFinal;   %Initial state for other simulations = end state of this simulation
 
 
@@ -93,12 +94,12 @@ for i=run
     Phigate=flow.Phigate(i);    %Weir boundary condition
     baffleCorr=baffleMat(i,:);  %Baffle correction factors
 
-    bc=getBIC(flow(i,:));   %Get other boundary and initial conditions
+    bc=getBIC(flow(i,:),direction);   %Get other boundary conditions
 
     
     %Simulate
-    out=sim('dynamicModel','LoadExternalInput','on','ExternalInput','bc',...
-                        'LoadInitialState','on','InitialState','xInit');
+    out=sim(sys,'LoadExternalInput','on','ExternalInput','bc',...
+                'LoadInitialState','on','InitialState','xInit');
 
 
     %Post processing

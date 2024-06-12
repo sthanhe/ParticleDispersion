@@ -27,11 +27,12 @@
 %dispersion measurements, which gets created by the script "calcPartDisp" 
 %and stored in the dirStationary folder ("../DataStationary" by default).
 %
-%Required products:
-%   - MATLAB, version 9.14
-%   - Simulink, version 10.7
-%   - Simulink Real-Time, version 8.2
-%   - Stateflow, version 10.8
+%Required products, version 24.1:
+%   - MATLAB
+%   - Simulink
+%   - Requirements Toolbox
+%   - Simulink Real-Time
+%   - Stateflow
 %Necessary files, classes, functions, and scripts:
 %   - @DryAir
 %   - @FluBed
@@ -40,7 +41,9 @@
 %   - baffleCalib.m
 %   - getBCF.m
 %   - getBIC.m
+%   - mdlPostLoadFx.m
 %   - loadGeometry.m
+%   - getMdotSstatic.m
 %   - dynamicModel.slx
 %   - stat_SumPartDisp.csv
 
@@ -56,18 +59,20 @@ end
 
 
 %% Load dynamic model and activate fast restart
-load_system('dynamicModel');
-set_param('dynamicModel',"FastRestart","on");
-cleanup=onCleanup(@() set_param('dynamicModel',"FastRestart","off"));
+mdl='dynamicModel';
+sys=load_system(mdl);
+mdlPostLoadFx;
+
+set_param(mdl,"FastRestart","on");
+cleanup=onCleanup(@() set_param(mdl,"FastRestart","off"));
 
 
 %% Load data
 flow=readtable([dirStationary,filesep,'stat_SumPartDisp.csv']);
 
-%Add variables
-flow.Phigate=zeros(height(flow),1);     %Weir boundary condition
+%Add variables: weir boundary condition and individual baffle correction factors
+flow.Phigate=zeros(height(flow),1);
 
-%Individual baffle correction factors
 flow.baffleCorr1=ones(height(flow),1);
 flow.baffleCorr2=ones(height(flow),1);
 flow.baffleCorr3=ones(height(flow),1);
@@ -75,20 +80,10 @@ flow.baffleCorr3=ones(height(flow),1);
 
 %% Do baffle calibration
 baffleCalib;
-delete(cleanup);    %Deactivate fast restart
 
 
 %Record table for future analysis
 writetable(flow,[dirStationary,filesep,'stat_SumPrep.csv']);
-
-
-
-
-
-
-
-
-
 
 
 

@@ -25,8 +25,8 @@
 %
 %Requires all auxiliary classes and functions on the MATLAB path
 %
-%Required products:
-%   - MATLAB, version 9.14
+%Required products, version 24.1:
+%   - MATLAB
 %Necessary files, classes, functions, and scripts:
 %   - None
 
@@ -50,8 +50,8 @@ function postStatic(out,flow,x,xChambers,figidx,dirFigures)
 
 
     %Set up figure
-    fig7=figure(figidx);
-    clf(fig7);
+    fig912=figure(figidx);
+    clf(fig912);
     ax=gca();
     box(ax,'on');
     hold(ax,'on');
@@ -69,15 +69,15 @@ function postStatic(out,flow,x,xChambers,figidx,dirFigures)
     %Configure and save figure
     legend(ax,{'Simulated','Measured'});
 
-    t7=title(ax,titleText,'Interpreter','latex');
+    title(ax,titleText,'Interpreter','latex');
     xlabel(ax,'Distance from Inlet (m)');
     ylabel(ax,'Bed Level (m)');
 
-    fig7.Units='centimeters';
-    fig7.Position=[0.02,12.18,17,8.5];
+    fig912.Units='centimeters';
+    fig912.Position=[0.02,12.18,17,8.5];
     ax.XLim=[0,max(x)];
 
-    exportgraphics(fig7,[dirFigures,filesep,'statLevels',num2str(figidx),'.tiff']);
+    exportgraphics(fig912,[dirFigures,filesep,'statLevels',num2str(figidx),'.tiff']);
 
 
     %% Fluidization
@@ -86,8 +86,8 @@ function postStatic(out,flow,x,xChambers,figidx,dirFigures)
 
 
     %Set up figure
-    fig8=figure(figidx+100);
-    clf(fig8);
+    fig913=figure(figidx+100);
+    clf(fig913);
     ax=gca();
     box(ax,'on');
 
@@ -110,29 +110,14 @@ function postStatic(out,flow,x,xChambers,figidx,dirFigures)
     
 
     %Configure and save figure
-    t8=title(ax,titleText,'Interpreter','latex');
+    title(ax,titleText,'Interpreter','latex');
     xlabel(ax,'Distance from Inlet (m)');
 
-    fig8.Units='centimeters';
-    fig8.Position=[0.02,0.83,17,8.5];
+    fig913.Units='centimeters';
+    fig913.Position=[0.02,0.83,17,8.5];
     ax.XLim=[0,max(x)];
 
-    exportgraphics(fig8,[dirFigures,filesep,'statFluidization',num2str(figidx),'.tiff']);
-
-
-    %% Export graphics for paper separately
-    if figidx==12
-        delete([t7,t8]);    %Delete titles
-
-        %Resave as tiff
-        exportgraphics(fig7,[dirFigures,filesep,'Figure7.tiff']);
-        exportgraphics(fig8,[dirFigures,filesep,'Figure8.tiff']);
-
-        %Save as eps
-        exportgraphics(fig7,[dirFigures,filesep,'Figure7.eps']);
-        exportgraphics(fig8,[dirFigures,filesep,'Figure8.eps']);
-        
-    end
+    exportgraphics(fig913,[dirFigures,filesep,'statFluidization',num2str(figidx),'.tiff']);
 end
 
 

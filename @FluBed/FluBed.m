@@ -21,8 +21,8 @@
 %
 %Requires all files packaged in the class folder and on the MATLAB path
 %
-%Required products:
-%   - MATLAB, version 9.14
+%Required products, version 24.1:
+%   - MATLAB
 %Additional classes:
 %   - DryAir
 %   - implExp
@@ -196,19 +196,19 @@ classdef FluBed
                         Ar(idx).^epsAr;
             end
         end
-    end
-    
-    
-    
-    methods(Static, Access=protected)
+
+
         function Ar=Ar(d_p,rho_p,p,T_A)
             %Archimedes number, assuming dry air as fluidizing gas
             rho_g=DryAir.rho(p,T_A);
 
             Ar=rho_g.*d_p.^3.*(rho_p-rho_g).*FluBed.g./DryAir.eta(T_A).^2;
         end
-
-
+    end
+    
+    
+    
+    methods(Static, Access=protected)
         function Re=Re(d_p,w,p,T)
             %Reynolds number with respect to particle diameter
             Re=d_p.*w./(DryAir.ny(p,T));

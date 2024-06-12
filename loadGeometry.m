@@ -25,8 +25,8 @@
 %
 %Requires all auxiliary classes and functions on the MATLAB path
 %
-%Required products:
-%   - MATLAB, version 9.14
+%Required products, version 24.1:
+%   - MATLAB
 %Necessary files, classes, functions, and scripts:
 %   - None
 
@@ -45,8 +45,8 @@ l=0.5;              %Inner width of bed
 hTotal=1.4715;      %Total height from floor to top of freeboard
 hGate=461.5e-3;     %Height from floor to outlet weir
 
-sinter="SIKA-R 15 AX";  %Sinter floor name (not functional)
 s=5e-3;                 %Sinter floor thickness
+sinter="SIKA-R 15 AX";  %Sinter floor name (not functional)
 
 Kvs=220;                    %Kvs value of air cushion valves in m³/h for water (1000 kg/m³) at a pressure difference of 1 bar
 dACpipe=88.9e-3-2*3.2e-3;   %Inner diameter of air cushion valve connection pipe
@@ -56,9 +56,9 @@ rho_p=2650;         %Particle density
 eps_mf=0.45;        %Porosity at minimum fluidization conditions
 
 href=1;             %Reference height (mass diffusivity)
-% baffleCorr=[1,1,1];   %Baffle correction factor
 
-%Air box volumes, measured from CAD
+
+%Air box volumes, measured from CAD model
 VABs=NaN(1,length(xChambers));
 VABs(1)=109114.741e-6*160.5e-3+83595.112e-6*cos(0.15)*(200e-3-160.5e-3)/2+(109114.741e-6-83595.112e-6*cos(0.15))*(200e-3-160.5e-3);
 VABs(2)=109114.741e-6*923.5e-3+88196.654e-6*cos(0.37)*(1023e-3-923.5e-3)/2+(109114.741e-6-88196.654e-6*cos(0.37))*(1023e-3-923.5e-3)+620e-3*32.5e-3*4e-3-4*33546.891e-6*4e-3;
@@ -90,12 +90,6 @@ posBedLevel=sort([lCum-xPress./2,lCum+xPress./2]);
 posBedLevel=round(interp1(x,1:n,posBedLevel));      %Cell indices in which the bed level gets measured
 posBedLevelForward=posBedLevel(3:2:end);            %Cell indices of bed level measurements when the direction is forward (left to right)
 posBedLevelReverse=posBedLevel(2:2:end-1);          %Cell indices of bed level measurements when the direction is reverse (right to left)
-
-
-%% Simulation time
-minSimTime=240;      %Minimum simulation time (seconds)
-maxSimTime=1200;    %Maximum simulation time (seconds)
-statCond=1e-6;      %Condition for stationary status as a value of PhiDot
 
 
 

@@ -22,8 +22,8 @@
 %This script sets up the dimensional set shown in the paper.
 %
 %
-%Required products:
-%   - MATLAB, version 9.14
+%Required products, version 24.1:
+%   - MATLAB
 %Necessary files, classes, functions, and scripts:
 %   - None
 

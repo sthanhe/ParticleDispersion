@@ -27,8 +27,8 @@
 %dispersion measurements, which gets created by the script "prepStatic" 
 %and stored in the dirStationary folder ("../DataStationary" by default).
 %
-%Required products:
-%   - MATLAB, version 9.14
+%Required products, version 24.1:
+%   - MATLAB
 %Necessary files, classes, functions, and scripts:
 %   - stat_SumPrep.csv
 

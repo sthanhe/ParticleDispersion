@@ -25,8 +25,8 @@
 %
 %Requires all auxiliary classes and functions on the MATLAB path
 %
-%Required products:
-%   - MATLAB, version 9.14
+%Required products, version 24.1:
+%   - MATLAB
 %Necessary files, classes, functions, and scripts:
 %   - None
 
@@ -50,7 +50,7 @@ d_p=sum(resid.*meshmean);    %Mean particle diameter
 
 
 %Set up figure
-fig=figure(1);
+fig=figure(901);
 clf(fig);
 ax=gca();
 box(ax,'on');

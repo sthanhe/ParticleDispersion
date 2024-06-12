@@ -25,8 +25,8 @@
 %
 %Requires all auxiliary classes and functions on the MATLAB path
 %
-%Required products:
-%   - MATLAB, version 9.14
+%Required products, version 24.1:
+%   - MATLAB
 %Necessary files, classes, functions, and scripts:
 %   - @DryAir
 %   - @FluBed
@@ -135,6 +135,10 @@ function main=getProp(tab,c,flowNames,chambers)
     bed.h6=max(zeros(height(tab),1),FluBed.h(tab.p9,bed.eps3,c.rho_p));
 
 
+    %Bed temperature in the center
+    Tcenter=mean([tab.T1,tab.T3,tab.T5],2);
+
+
     %% Particle dispersion
     w_pNames=compose('w_p%d',chambers);
     PhiNames=compose('Phi%d',chambers);
@@ -194,14 +198,12 @@ function main=getProp(tab,c,flowNames,chambers)
     flu.Time=tab.Time;
     clear('names');
 
-    Tcenter=mean([tab.T1,tab.T3,tab.T5],2);
-
     
     %Chamber 1: inlet chamber
     flu.pBed1=tab.p21+FluBed.deltaP((bed.h6+c.hBed)./2,bed.eps3,c.rho_p);
     flu.Tbed1=tab.T7;
-    flu.rho_g1=DryAir.rho(flu.pBed1,flu.Tbed1);
     flu.wmf1=FluBed.wmf(c.d_p,c.rho_p,flu.pBed1,flu.Tbed1);
+    flu.rho_g1=DryAir.rho(flu.pBed1,flu.Tbed1);
     flu.w_e1=air.mDot1./(flu.rho_g1.*c.Afloor1)-flu.wmf1;
     flu.FG1=flu.w_e1./flu.wmf1+1;
 
@@ -210,8 +212,8 @@ function main=getProp(tab,c,flowNames,chambers)
     flu.pBed2=tab.p21+tab.p19+FluBed.deltaP((mean([bed.h4,bed.h5],2)+c.hBed)./2,...
             mean([bed.eps2,bed.eps3],2),c.rho_p);
     flu.Tbed2=mean([tab.T7,Tcenter],2);
-    flu.rho_g2=DryAir.rho(flu.pBed2,flu.Tbed2);
     flu.wmf2=FluBed.wmf(c.d_p,c.rho_p,flu.pBed2,flu.Tbed2);
+    flu.rho_g2=DryAir.rho(flu.pBed2,flu.Tbed2);
     flu.w_e2=air.mDot2./(flu.rho_g2.*c.Afloor2)-flu.wmf2;
     flu.FG2=flu.w_e2./flu.wmf2+1;
 
@@ -220,8 +222,8 @@ function main=getProp(tab,c,flowNames,chambers)
     flu.pBed3=tab.p21+tab.p18+FluBed.deltaP((mean([bed.h2,bed.h3],2)+c.hBed)./2,...
             mean([bed.eps1,bed.eps2],2),c.rho_p);
     flu.Tbed3=mean([tab.T6,Tcenter],2);
-    flu.rho_g3=DryAir.rho(flu.pBed3,flu.Tbed3);
     flu.wmf3=FluBed.wmf(c.d_p,c.rho_p,flu.pBed3,flu.Tbed3);
+    flu.rho_g3=DryAir.rho(flu.pBed3,flu.Tbed3);
     flu.w_e3=air.mDot3./(flu.rho_g3.*c.Afloor3)-flu.wmf3;
     flu.FG3=flu.w_e3./flu.wmf3+1;
     
@@ -229,8 +231,8 @@ function main=getProp(tab,c,flowNames,chambers)
     %Chamber 4: outlet chamber
     flu.pBed4=tab.p21+FluBed.deltaP((bed.h1+c.hBed)./2,bed.eps1,c.rho_p);
     flu.Tbed4=tab.T6;
-    flu.rho_g4=DryAir.rho(flu.pBed4,flu.Tbed4);
     flu.wmf4=FluBed.wmf(c.d_p,c.rho_p,flu.pBed4,flu.Tbed4);
+    flu.rho_g4=DryAir.rho(flu.pBed4,flu.Tbed4);
     flu.w_e4=air.mDot4./(flu.rho_g4.*c.Afloor1)-flu.wmf4;
     flu.FG4=flu.w_e4./flu.wmf4+1;
 

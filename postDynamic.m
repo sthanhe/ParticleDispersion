@@ -25,8 +25,8 @@
 %
 %Requires all auxiliary classes and functions on the MATLAB path
 %
-%Required products:
-%   - MATLAB, version 9.14
+%Required products, version 24.1:
+%   - MATLAB
 %Necessary files, classes, functions, and scripts:
 %   - StepResponseFigureInsert.tiff in the dirFigures folder
 
@@ -57,7 +57,7 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     hold(ax,'off');
 
     %Configure and save figure
-    legend(ax,{'Measured','Simulated','Setpoint'});
+    legend(ax,{'Measured','Predicted','Setpoint'});
 
     t9=title(ax,titleText,'Interpreter','latex');
     xlabel(ax,'Time (HH:MM:SS)');
@@ -70,47 +70,14 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     exportgraphics(fig9,[dirFigures,filesep,'stepRespContr',num2str(figidx),'.tiff']);
 
 
-    %% Actuating value
-    Ysim=timeseries2timetable(out.Ypid);
-    Y=Ysim.Data(:,1);           %Simulated actuating value
+    %% Other bed level responses
+    hmeas=[dyn.h6,dyn.h5,dyn.h4];           %Measured bed levels
+    hsimChambers=hsim{:,1}(:,posBedLevel);  %Predicted bed levels at each measurement position
 
 
     %Set up figure
     fig10=figure(figidx+100);
     clf(fig10);
-    ax=gca();
-    box(ax,'on');
-    hold(ax,'on');
-
-    plot(dyn.Time,dyn.AC1);
-    plot(Ysim.Time,Y);
-
-    %Mark start of step
-    xline(ax,duration(0,0,20));
-    hold(ax,'off');
-
-    %Configure and save figure
-    legend(ax,{'Measured','Simulated'});
-
-    t10=title(ax,titleText,'Interpreter','latex');
-    xlabel(ax,'Time (HH:MM:SS)');
-    ylabel(ax,'Valve Actuating Value (-)');
-
-    fig10.Units='centimeters';
-    fig10.Position=[0.02,0.83,17,8.5];
-    ax.XLim=[0,max(dyn.Time)];
-
-    exportgraphics(fig10,[dirFigures,filesep,'stepRespValve',num2str(figidx),'.tiff']);
-
-
-    %% Other bed level responses
-    hmeas=[dyn.h6,dyn.h5,dyn.h4];           %Measured bed levels
-    hsimChambers=hsim{:,1}(:,posBedLevel);  %Simulated bed levels at each measurement position
-
-
-    %Set up figure
-    fig11=figure(figidx+200);
-    clf(fig11);
     ax=gca();
     box(ax,'on');
     hold(ax,'on');
@@ -134,37 +101,68 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     legItems(5)=plot(ax,d0,0,'Color','k','LineStyle','--');
     hold(ax,'off');
 
-    legend(ax,legItems,{'h_6','h_5','h_4','Measured','Simulated'},'Location','bestoutside');
+    legend(ax,legItems,{'h_6','h_5','h_4','Measured','Predicted'},'Location','bestoutside');
 
     %Configure and save figure
-    t11=title(ax,titleText,'Interpreter','latex');
+    t10=title(ax,titleText,'Interpreter','latex');
     xlabel(ax,'Time (HH:MM:SS)');
     ylabel(ax,'Bed Level (m)');
 
-    fig11.Units='centimeters';
-    fig11.Position=[23.62,12.18,17,8.5];
+    fig10.Units='centimeters';
+    fig10.Position=[23.62,12.18,17,8.5];
     ax.XLim=[0,max(dyn.Time)];
     ax.YLim=[min(hmeas,[],'all')*0.85,max(hmeas,[],'all')*1.05]+hBed;
 
-    ax2=axes(fig11,'Units','centimeters','Position',[12.5,1.25,3.6,3.59]);
+    ax2=axes(fig10,'Units','centimeters','Position',[12.5,1.25,3.6,3.59]);
     imshow([dirFigures,filesep,'StepResponseFigureInsert.tiff'],'Parent',ax2,'InitialMagnification','fit','Interpolation','bilinear','Reduce',false);
 
-    exportgraphics(fig11,[dirFigures,filesep,'stepRespAll',num2str(figidx),'.tiff']);
+    exportgraphics(fig10,[dirFigures,filesep,'stepRespAll',num2str(figidx),'.tiff']);
+
+
+    %% Actuating value
+    Ysim=timeseries2timetable(out.Ypid);
+    Y=Ysim.Data(:,1);           %Predicted actuating value
+
+
+    %Set up figure
+    fig915=figure(figidx+900);
+    clf(fig915);
+    ax=gca();
+    box(ax,'on');
+    hold(ax,'on');
+
+    plot(dyn.Time,dyn.AC1);
+    plot(Ysim.Time,Y);
+
+    %Mark start of step
+    xline(ax,duration(0,0,20));
+    hold(ax,'off');
+
+    %Configure and save figure
+    legend(ax,{'Measured','Predicted'});
+
+    title(ax,titleText,'Interpreter','latex');
+    xlabel(ax,'Time (HH:MM:SS)');
+    ylabel(ax,'Valve Actuating Value (-)');
+
+    fig915.Units='centimeters';
+    fig915.Position=[0.02,0.83,17,8.5];
+    ax.XLim=[0,max(dyn.Time)];
+
+    exportgraphics(fig915,[dirFigures,filesep,'stepRespValve',num2str(figidx),'.tiff']);
 
 
     %% Export graphics for paper separately
     if figidx==9
-        delete([t9,t10,t11]);    %Delete titles
+        delete([t9,t10]);    %Delete titles
 
         %Resave as tiff
         exportgraphics(fig9,[dirFigures,filesep,'Figure9.tiff']);
         exportgraphics(fig10,[dirFigures,filesep,'Figure10.tiff']);
-        exportgraphics(fig11,[dirFigures,filesep,'Figure11.tiff']);
 
         %Save as eps
         exportgraphics(fig9,[dirFigures,filesep,'Figure9.eps']);
         exportgraphics(fig10,[dirFigures,filesep,'Figure10.eps']);
-        exportgraphics(fig11,[dirFigures,filesep,'Figure11.eps']);
     end
 
 

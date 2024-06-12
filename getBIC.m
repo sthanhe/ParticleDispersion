@@ -25,14 +25,14 @@
 %
 %Requires all auxiliary classes and functions on the MATLAB path
 %
-%Required products:
-%   - MATLAB, version 9.14
+%Required products, version 24.1:
+%   - MATLAB
 %Necessary files, classes, functions, and scripts:
 %   - @DryAir
 %   - loadGeometry.m
 
 
-function [bc,Phi,mAC,HAC,mAB]=getBIC(flow)
+function [bc,Phi,mAC,HAC,mAB]=getBIC(flow,direction)
     %% Basic geometry
     loadGeometry;
 
@@ -47,13 +47,17 @@ function [bc,Phi,mAC,HAC,mAB]=getBIC(flow)
     
     
     mDotSand=zeros(1,n);
-    mDotSand(1:nChambers(1))=repmat(flow.mDotS./(deltaX*nChambers(1)),1,nChambers(1));
+    if direction
+        mDotSand(1:nChambers(1))=repmat(flow.mDotS./(deltaX*nChambers(1)),1,nChambers(1));
+    else
+        mDotSand(n-nChambers(end)+1:end)=repmat(flow.mDotS./(deltaX*nChambers(end)),1,nChambers(end)); %#ok<FNCOLND>
+    end
     S=timetable(Time,mDotSand);     %Sand flow, distributed evenly across inlet chamber
     
 
-    mDotABin=timetable(Time,flow{1,compose('air%d',1:nABs)});  %Air mass flows
-
+    mDotABin=timetable(Time,flow{1,compose('air%d',1:nABs)});   %Air mass flows
     hSet=timetable(Time,flow{1,compose('AC%dset',1:nACs)});     %PID controller setpoint
+    dirTT=timetable(Time,double(direction));                    %Sand flow direction
 
 
     %Set up dataset
@@ -63,6 +67,7 @@ function [bc,Phi,mAC,HAC,mAB]=getBIC(flow)
     bc=addElement(bc,poro,'poro');
     bc=addElement(bc,hSet,'hSet');
     bc=addElement(bc,mDotABin,'mDotABin');
+    bc=addElement(bc,dirTT,'direction');
     
 
     %% Initial conditions

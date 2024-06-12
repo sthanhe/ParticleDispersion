@@ -24,11 +24,12 @@
 %dynamic preparation scripts, "prepStatic" or "prepDynamic".
 %
 %
-%Required products:
-%   - MATLAB, version 9.14
-%   - Simulink, version 10.7
-%   - Simulink Real-Time, version 8.2
-%   - Stateflow, version 10.8
+%Required products, version 24.1:
+%   - MATLAB
+%   - Simulink
+%   - Requirements Toolbox
+%   - Simulink Real-Time
+%   - Stateflow
 %Necessary files, classes, functions, and scripts:
 %   - @DryAir
 %   - @FluBed
@@ -36,15 +37,10 @@
 %   - @Sinter
 %   - getBCF.m
 %   - getBIC.m
+%   - mdlPostLoadFx.m
 %   - loadGeometry.m
+%   - getMdotSstatic.m
 %   - dynamicModel.slx
-
-
-%% Constant input values
-loadGeometry;           %Basic geometry
-gates=[false,true];     %Gates (open / close)
-direction=true;         %Operating direction, true=forward (left to right)
-Y0=ones(1,nACs);        %AC valve rate limiter initial condition
 
 
 %% Prepare table
@@ -66,7 +62,7 @@ tab.PhigateHigh=tab.PhigateLow.*1.005;
 tab.baffleLow=ones(height(tab),1);
 tab.baffleHigh=50*ones(height(tab),1);
 
-ACactive=(flow.AC1~=1)';    %Runs were air cushion is active in the beginning
+ACactive=(flow.AC1~=1)';    %Runs where air cushion is active in the beginning
 tab.baffleLow(ACactive)=20;
 
 
@@ -79,25 +75,26 @@ p0=flow.p0(1);              %Ambient pressure
 baffleCorr=baffleMat(1,:);  %Baffle correction factors
 Phigate=tab.PhigateLow(1);  %Weir boundary condition
 
-[bc,Phi,mAC,HAC,mAB]=getBIC(flow(1,:));     %Get other boundary and initial conditions
+[bc,Phi,mAC,HAC,mAB]=getBIC(flow(1,:),direction);     %Get other boundary and initial conditions
 
 
 %Simulate
-out=sim('dynamicModel','LoadExternalInput','on','ExternalInput','bc');
+out=sim(sys,'LoadExternalInput','on','ExternalInput','bc',...
+            'LoadInitialState','off');
 xInit=out.xFinal;   %Initial state for other simulations = end state of this simulation
 
 
 %% Phigate (weir boundary condition)
 for i=1:height(flow)
     p0=flow.p0(i);          %Ambient pressure
-    bc=getBIC(flow(i,:));   %Get other boundary and initial conditions
+    bc=getBIC(flow(i,:),direction);   %Get other boundary conditions
 
 
     %Simulate low Phigate estimate
     Phigate=tab.PhigateLow(i); %#ok<NASGU>
 
-    out=sim('dynamicModel','LoadExternalInput','on','ExternalInput','bc',...
-                        'LoadInitialState','on','InitialState','xInit');
+    out=sim(sys,'LoadExternalInput','on','ExternalInput','bc',...
+                'LoadInitialState','on','InitialState','xInit');
 
     hsim=timeseries2timetable(out.h);
     tab.hLow(i)=hsim.hOverX(end,posBedLevel(end));  %Low h1 estimate
@@ -106,8 +103,8 @@ for i=1:height(flow)
     %Simulate high Phigate estimate
     Phigate=tab.PhigateHigh(i);
 
-    out=sim('dynamicModel','LoadExternalInput','on','ExternalInput','bc',...
-                        'LoadInitialState','on','InitialState','xInit');
+    out=sim(sys,'LoadExternalInput','on','ExternalInput','bc',...
+                'LoadInitialState','on','InitialState','xInit');
 
     hsim=timeseries2timetable(out.h);
     tab.hHigh(i)=hsim.hOverX(end,posBedLevel(end));     %High h1 estimate
@@ -121,9 +118,9 @@ end
 
 
 %% Baffle 2: inactive AC1
-baffleIdx=2; %Baffle index
-bafflePos=posBedLevel(3); %#ok<NASGU> %Baffle position index
-hname='h4'; %#ok<NASGU> %Name of bed level to be simulated
+baffleIdx=2;                %Baffle index
+bafflePos=posBedLevel(3);   %#ok<NASGU> %Baffle position index
+hname='h4';                 %#ok<NASGU> %Name of bed level to be simulated
 
 
 %Runs to analyze: only where AC1 is inactive in the beginning
@@ -154,14 +151,14 @@ for i=find(ACactive)
     p0=flow.p0(i);
     baffleCorr=baffleMat(i,:);
     Phigate=flow.Phigate(i);
-    bc=getBIC(flow(i,:));
+    bc=getBIC(flow(i,:),direction);
 
 
     %Simulate low baffleCorr estimate
     baffleCorr(baffleIdx)=tab.baffleLow(i);
 
-    out=sim('dynamicModel','LoadExternalInput','on','ExternalInput','bc',...
-                        'LoadInitialState','on','InitialState','xInit');
+    out=sim(sys,'LoadExternalInput','on','ExternalInput','bc',...
+                'LoadInitialState','on','InitialState','xInit');
 
     Ysim=timeseries2timetable(out.Ypid);
     tab.Ylow(i)=Ysim.Data(end,1);   %Low AC actuating value estimate
@@ -170,8 +167,8 @@ for i=find(ACactive)
     %Simulate high baffleCorr estimate
     baffleCorr(baffleIdx)=tab.baffleHigh(i);
 
-    out=sim('dynamicModel','LoadExternalInput','on','ExternalInput','bc',...
-                        'LoadInitialState','on','InitialState','xInit');
+    out=sim(sys,'LoadExternalInput','on','ExternalInput','bc',...
+                'LoadInitialState','on','InitialState','xInit');
 
     Ysim=timeseries2timetable(out.Ypid);
     tab.Yhigh(i)=Ysim.Data(end,1);   %High AC actuating value estimate
@@ -188,8 +185,8 @@ for i=find(ACactive)
                         'linear','extrap');
 
 
-        out=sim('dynamicModel','LoadExternalInput','on','ExternalInput','bc',...
-                        'LoadInitialState','on','InitialState','xInit');
+        out=sim(sys,'LoadExternalInput','on','ExternalInput','bc',...
+                    'LoadInitialState','on','InitialState','xInit');
 
         Ysim=timeseries2timetable(out.Ypid);
         Ybisect=Ysim.Data(end,1);   %Bisected AC actuating value estimate
@@ -225,6 +222,7 @@ run=1:height(flow);     %Runs to analyze
 
 %Get baffle correction factors
 getBCF;
+delete(cleanup);    %Deactivate fast restart
 
 
 %% Add baffle correction matrix to flow table

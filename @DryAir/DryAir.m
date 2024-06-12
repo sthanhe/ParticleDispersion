@@ -30,8 +30,8 @@
 %
 %Requires all files packaged in the class folder and on the MATLAB path
 %
-%Required products:
-%   - MATLAB, version 9.14
+%Required products, version 24.1:
+%   - MATLAB
 %Data files:
 %   - dryAir.xls
 %   - dryAirTable.mat

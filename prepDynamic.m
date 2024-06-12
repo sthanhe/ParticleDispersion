@@ -30,11 +30,12 @@
 %by default). All auxiliary classes and functions must be on the MATLAB 
 %path.
 %
-%Required products:
-%   - MATLAB, version 9.14
-%   - Simulink, version 10.7
-%   - Simulink Real-Time, version 8.2
-%   - Stateflow, version 10.8
+%Required products, version 24.1:
+%   - MATLAB
+%   - Simulink
+%   - Requirements Toolbox
+%   - Simulink Real-Time
+%   - Stateflow
 %Necessary files, classes, functions, and scripts:
 %   - @DryAir
 %   - @FluBed
@@ -46,16 +47,18 @@
 %   - getBIC.m
 %   - getConstants.m
 %   - getProp.m
+%   - mdlPostLoadFx.m
 %   - loadGeometry.m
+%   - getMdotSstatic.m
 %   - dynamicModel.slx
 %   - dynRaw_Run...
 %   - stat_SumPrep.csv
 
 
 %% Set data directories
-dirStationary='../DataStationary';     %Path to directory where stationary simulation data should be stored
-dirData='../DataDynamic';      %Path to directory containing the data
-dirFigures='../Figures';       %Path to directory where figures should be stored
+dirStationary='../DataStationary';  %Path to directory where stationary simulation data should be stored
+dirData='../DataDynamic';           %Path to directory containing the data
+dirFigures='../Figures';            %Path to directory where figures should be stored
 
 %Create storage folder if it does not exist
 if ~isfolder(dirFigures)
@@ -64,14 +67,17 @@ end
 
 
 %% Load dynamic model and activate fast restart
-load_system('dynamicModel');
-set_param('dynamicModel',"FastRestart","on");
-cleanup=onCleanup(@() set_param('dynamicModel',"FastRestart","off"));
+mdl='dynamicModel';
+sys=load_system(mdl);
+mdlPostLoadFx;
+
+set_param(mdl,"FastRestart","on");
+cleanup=onCleanup(@() set_param(mdl,"FastRestart","off"));
 
 
 %% Prepare analysis
 %Get constants
-c=getConstants();
+const=getConstants();
 
 
 %Retrieve filenames
@@ -89,6 +95,7 @@ files=files(idx);
 flow=readtable([dirStationary,filesep,'stat_SumPrep.csv']);
 flow{:,2:end}=0;
 flow(length(files)+1:end,:)=[];
+names=flow.Properties.VariableNames(2:end);
 chambers=1:6;
 
 
@@ -102,13 +109,14 @@ for i=1:length(files)
     tab=readtable([dirData,filesep,files{i}]);
 
     %Set up table
-    names=[{'Time'},flow.Properties.VariableNames(2:end)];
-    dyn=table('Size',[height(tab),length(names)],'VariableTypes',[{'duration'},repmat({'double'},1,length(names)-1)]);
-    dyn.Properties.VariableNames=names;
-    clear('names');
+    % names=[{'Time'},flow.Properties.VariableNames(2:end)];
+    % dyn=table('Size',[height(tab),length(names)],'VariableTypes',[{'duration'},repmat({'double'},1,length(names)-1)]);
+    % dyn.Properties.VariableNames=names;
+    % clear('names');
 
     %Get properties
-    dyn(:,1:end)=getProp(tab,c,dyn.Properties.VariableNames(2:end),chambers);
+    % dyn(:,1:end)=getProp(tab,c,dyn.Properties.VariableNames(2:end),chambers);
+    dyn=getProp(tab,const,names,chambers);
 
 
     %Record table for future analysis
@@ -126,12 +134,11 @@ end
 
 %Add persistent bed levels
 hNames=compose('h%d',chambers);
-flow{:,hNames}=flow{:,hNames}+c.hBed;
+flow{:,hNames}=flow{:,hNames}+const.hBed;
 
 
 %% Do baffle calibration
 baffleCalib;
-delete(cleanup);    %Deactivate fast restart
 
 
 %Record table for future analysis

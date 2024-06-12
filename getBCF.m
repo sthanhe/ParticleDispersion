@@ -24,18 +24,21 @@
 %"baffleCalib" script. 
 %
 %
-%Required products:
-%   - MATLAB, version 9.14
-%   - Simulink, version 10.7
-%   - Simulink Real-Time, version 8.2
-%   - Stateflow, version 10.8
+%Required products, version 24.1:
+%   - MATLAB
+%   - Simulink
+%   - Requirements Toolbox
+%   - Simulink Real-Time
+%   - Stateflow
 %Necessary files, classes, functions, and scripts:
 %   - @DryAir
 %   - @FluBed
 %   - @implExp
 %   - @Sinter
 %   - getBIC.m
+%   - mdlPostLoadFx.m
 %   - loadGeometry.m
+%   - getMdotSstatic.m
 %   - dynamicModel.slx
 
 
@@ -49,14 +52,14 @@ for i=run
     p0=flow.p0(i);
     baffleCorr=baffleMat(i,:);
     Phigate=flow.Phigate(i);
-    bc=getBIC(flow(i,:));
+    bc=getBIC(flow(i,:),direction);
 
 
     %Simulate low baffleCorr estimate
     baffleCorr(baffleIdx)=tab.baffleLow(i);
 
-    out=sim('dynamicModel','LoadExternalInput','on','ExternalInput','bc',...
-                        'LoadInitialState','on','InitialState','xInit');
+    out=sim(sys,'LoadExternalInput','on','ExternalInput','bc',...
+                'LoadInitialState','on','InitialState','xInit');
 
     hsim=timeseries2timetable(out.h);
     tab.hLow(i)=hsim.hOverX(end,bafflePos);     %Low h estimate
@@ -71,8 +74,8 @@ for i=run
     %Simulate high baffleCorr estimate
     baffleCorr(baffleIdx)=tab.baffleHigh(i);
 
-    out=sim('dynamicModel','LoadExternalInput','on','ExternalInput','bc',...
-                        'LoadInitialState','on','InitialState','xInit');
+    out=sim(sys,'LoadExternalInput','on','ExternalInput','bc',...
+                'LoadInitialState','on','InitialState','xInit');
 
     hsim=timeseries2timetable(out.h);
     tab.hHigh(i)=hsim.hOverX(end,bafflePos);     %High h estimate

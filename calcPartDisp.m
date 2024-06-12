@@ -27,9 +27,9 @@
 %folder configured below and all auxiliary classes and functions on the
 %MATLAB path
 %
-%Required products:
-%   - MATLAB, version 9.14
-%   - Statistics and Machine Learning Toolbox, version 12.5
+%Required products, version 24.1:
+%   - MATLAB
+%   - Statistics and Machine Learning Toolbox
 %Necessary files, classes, functions, and scripts:
 %   - @DryAir
 %   - @FluBed
@@ -136,7 +136,7 @@ flow{isnan(flow.D2),2:end}=NaN;
 
 
 %% Show relation between pi4, pi5, and Ar
-figidx=6;
+figidx=5;
 
 %Main effects plot: group variables around mean test conditions
 pi4grp=[3.2,3.6,4.2].*1e-4;
@@ -167,7 +167,7 @@ mdl=fitnlm(X,flow.pi1,monofx,beta0);    %Fitted model
 
 %% Identify and remove outliers using Cook's distance
 %Plot Cook's distance
-fig=figure(107);
+fig=figure(906);
 clf(fig);
 
 plotDiagnostics(mdl,'cookd');
