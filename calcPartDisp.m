@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Applied Thermal Energy 2024
+%Chemical Engineering Science 2024
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
@@ -136,7 +136,7 @@ flow{isnan(flow.D2),2:end}=NaN;
 
 
 %% Show relation between pi4, pi5, and Ar
-figidx=5;
+figidx=6;
 
 %Main effects plot: group variables around mean test conditions
 pi4grp=[3.2,3.6,4.2].*1e-4;

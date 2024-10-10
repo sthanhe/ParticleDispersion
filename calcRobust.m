@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Applied Thermal Energy 2024
+%Chemical Engineering Science 2024
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
@@ -351,9 +351,7 @@ idxMax=mag(:,1)>-7 | mag(:,2)>-10;
 
 
 %Set up figure
-figidx=7;
-
-fig=figure(figidx);
+fig=figure(912);
 clf(fig);
 ax=gca();
 
@@ -374,9 +372,7 @@ legend(ax,{'Min','Max'},'Location','best');
 fig.Units='centimeters';
 fig.Position=[10,5,17,8.5];
 
-name=[dirFigures,filesep,'Figure',num2str(figidx)];
-exportgraphics(fig,[name,'.eps']);
-exportgraphics(fig,[name,'.tiff']);
+exportgraphics(fig,[dirFigures,filesep,'bodeplot.tiff']);
 
 
 %% Disk margins
@@ -393,9 +389,7 @@ idxMax=DM>1.9;
 
 
 %Set up figure
-figidx=8;
-
-fig=figure(figidx);
+fig=figure(913);
 clf(fig);
 ax=gca();
 
@@ -414,9 +408,7 @@ legend(ax,{'Max','Min'},'Location','best');
 fig.Units='centimeters';
 fig.Position=[10,5,17,8.5];
 
-name=[dirFigures,filesep,'Figure',num2str(figidx)];
-exportgraphics(fig,[name,'.eps']);
-exportgraphics(fig,[name,'.tiff']);
+exportgraphics(fig,[dirFigures,filesep,'diskmargins.tiff']);
 
 
 %% Cleanup

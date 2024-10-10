@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Applied Thermal Energy 2024
+%Chemical Engineering Science 2024
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
@@ -97,14 +97,7 @@ for i=run
     %Set air cushion setpoint step to measured one
     [~,idx]=find(bc,'Name','hSet');
     bc=setElement(bc,idx,timetable(dyn.Time,dyn{:,compose('AC%dset',1:nACs)}),'hSet');
-
-    %Set PID integrator initial condition to last Ypid value
-    % Y0=out.Ypid.Data(:,1,end)';
-    % [~,idx]=find(xInit,'Name','ACpid');
-    % xInit{idx}.Values.Data=Y0;
-    % for j=1:length(idx)
-    %     xInit{idx(j)}.Values.Data=Y0(j);
-    % end
+    
 
     %Simulate
     out=sim(sys,'LoadExternalInput','on','ExternalInput','bc',...
