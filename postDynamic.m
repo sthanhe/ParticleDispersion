@@ -50,8 +50,8 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     
     
     %Set up figure
-    fig7=figure(figidx);
-    clf(fig7);
+    fig6=figure(figidx);
+    clf(fig6);
     ax=gca();
     box(ax,'on');
     hold(ax,'on');
@@ -64,7 +64,7 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
 
     
     %Add residuals plot
-    ax2=axes(fig7,'Units','centimeters','Position',[8,4,3,3]);
+    ax2=axes(fig6,'Units','centimeters','Position',[8,4,3,3]);
     histogram(ax2,resid.*10^3,'Normalization','pdf');
 
     hold(ax2,'on');
@@ -90,18 +90,18 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     %Configure and save figure
     legend(ax,{'Measured','Predicted','Setpoint'});
 
-    t7=title(ax,titleText,'Interpreter','latex');
+    t6=title(ax,titleText,'Interpreter','latex');
     xlabel(ax,'Time (HH:MM:SS)');
     ylabel(ax,'Bed Level h_4 (mm)');
 
     ax.XLim=[0,max(dyn.Time)];
     ax.YLim=[ax.YLim(1),520];
 
-    fig7.Units='centimeters';
-    fig7.Position=[0.02,12.18,17,8.5];
+    fig6.Units='centimeters';
+    fig6.Position=[0.02,12.18,17,8.5];
     
 
-    exportgraphics(fig7,[dirFigures,filesep,'stepRespContr',num2str(figidx),'.tiff']);
+    exportgraphics(fig6,[dirFigures,filesep,'stepRespContr',num2str(figidx),'.tiff']);
 
 
     %% Other bed level responses
@@ -110,8 +110,8 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
 
 
     %Set up figure
-    fig8=figure(figidx+100);
-    clf(fig8);
+    fig7=figure(figidx+100);
+    clf(fig7);
     ax=gca();
     box(ax,'on');
     hold(ax,'on');
@@ -138,19 +138,19 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     legend(ax,legItems,{'h_6','h_5','h_4','Measured','Predicted'},'Location','bestoutside');
 
     %Configure and save figure
-    t8=title(ax,titleText,'Interpreter','latex');
+    t7=title(ax,titleText,'Interpreter','latex');
     xlabel(ax,'Time (HH:MM:SS)');
     ylabel(ax,'Bed Level (m)');
 
-    fig8.Units='centimeters';
-    fig8.Position=[23.62,12.18,17,8.5];
+    fig7.Units='centimeters';
+    fig7.Position=[23.62,12.18,17,8.5];
     ax.XLim=[0,max(dyn.Time)];
     ax.YLim=[min(hmeas,[],'all')*0.85,max(hmeas,[],'all')*1.05]+hBed;
 
-    ax2=axes(fig8,'Units','centimeters','Position',[12.5,1.25,3.6,3.59]);
+    ax2=axes(fig7,'Units','centimeters','Position',[12.5,1.25,3.6,3.59]);
     imshow([dirFigures,filesep,'StepResponseFigureInsert.tiff'],'Parent',ax2,'InitialMagnification','fit','Interpolation','bilinear','Reduce',false);
 
-    exportgraphics(fig8,[dirFigures,filesep,'stepRespAll',num2str(figidx),'.tiff']);
+    exportgraphics(fig7,[dirFigures,filesep,'stepRespAll',num2str(figidx),'.tiff']);
 
 
     %% Actuating value
@@ -188,15 +188,15 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
 
     %% Export graphics for paper separately
     if figidx==9
-        delete([t7,t8]);    %Delete titles
+        delete([t6,t7]);    %Delete titles
 
         %Resave as tiff
+        exportgraphics(fig6,[dirFigures,filesep,'Figure6.tiff']);
         exportgraphics(fig7,[dirFigures,filesep,'Figure7.tiff']);
-        exportgraphics(fig8,[dirFigures,filesep,'Figure8.tiff']);
 
         %Save as eps
+        exportgraphics(fig6,[dirFigures,filesep,'Figure6.eps']);
         exportgraphics(fig7,[dirFigures,filesep,'Figure7.eps']);
-        exportgraphics(fig8,[dirFigures,filesep,'Figure8.eps']);
     end
 
 

@@ -136,7 +136,7 @@ flow{isnan(flow.D2),2:end}=NaN;
 
 
 %% Show relation between pi4, pi5, and Ar
-figidx=6;
+figidx=5;
 
 %Main effects plot: group variables around mean test conditions
 pi4grp=[3.2,3.6,4.2].*1e-4;
