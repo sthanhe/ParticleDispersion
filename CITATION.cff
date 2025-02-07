@@ -1,8 +1,5 @@
 cff-version: 1.2.0
 title: Particle Dispersion Model Software
-message: >-
-  If you use this software, please cite it using the
-  metadata from this file.
 type: software
 authors:
   - given-names: Stefan
@@ -12,8 +9,8 @@ authors:
     orcid: https://orcid.org/0000-0003-2765-1156
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.7924693
-    description: Zenodo-link to newest version
+    value: 10.5281/zenodo.14833043
+    description: Zenodo-link to dataset
 abstract: Software repository for the particle dispersion model.
 keywords:
   - bubbling fluidized bed
