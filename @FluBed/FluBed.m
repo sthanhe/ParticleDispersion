@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Applied Thermal Energy 2024
+%Chemical Engineering Research and Design 2025
 %
 %All required files for this class can be found in the software
 %repository:
@@ -174,10 +174,10 @@ classdef FluBed
             %Particle dispersion coefficient
             persistent c eps2 eps3 epsAr
             if isempty(c)
-                c=19030.1124724027;
-                eps2=1.08175825313772;
-                eps3=-3.62266055421733;
-                epsAr=0.109738530498836;
+                c=19317.8340011694;
+                eps2=1.10169319091282;
+                eps3=-2.04940397390448;
+                epsAr=0.108571357573225;
             end
 
             den=sqrt(d_p.*FluBed.g);

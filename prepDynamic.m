@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Chemical Engineering Science 2024
+%Chemical Engineering Research and Design 2025
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
@@ -108,14 +108,8 @@ for i=1:length(files)
     %Read file
     tab=readtable([dirData,filesep,files{i}]);
 
-    %Set up table
-    % names=[{'Time'},flow.Properties.VariableNames(2:end)];
-    % dyn=table('Size',[height(tab),length(names)],'VariableTypes',[{'duration'},repmat({'double'},1,length(names)-1)]);
-    % dyn.Properties.VariableNames=names;
-    % clear('names');
 
     %Get properties
-    % dyn(:,1:end)=getProp(tab,c,dyn.Properties.VariableNames(2:end),chambers);
     dyn=getProp(tab,const,names,chambers);
 
 

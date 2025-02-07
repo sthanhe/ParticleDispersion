@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Chemical Engineering Science 2024
+%Chemical Engineering Research and Design 2025
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
@@ -50,7 +50,7 @@ d_p=sum(resid.*meshmean);    %Mean particle diameter
 
 
 %Set up figure
-fig=figure(901);
+fig=figure(902);
 clf(fig);
 ax=gca();
 box(ax,'on');
@@ -67,7 +67,8 @@ fig.Units='centimeters';
 fig.Position=[10,5,17,8.5];
 ax.XLim=[0,max(mesh)];
 
-exportgraphics(fig,[dirFigures,filesep,'particleSize.tiff']);
+exportgraphics(fig,[dirFigures,filesep,'particleSize.tiff'],...
+    'Resolution',600);
 
 
 

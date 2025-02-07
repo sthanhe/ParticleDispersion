@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Applied Thermal Energy 2024
+%Chemical Engineering Research and Design 2025
 %
 %All required files for this class can be found in the software
 %repository:

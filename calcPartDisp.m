@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Chemical Engineering Science 2024
+%Chemical Engineering Research and Design 2025
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
@@ -153,21 +153,22 @@ fig.Position=[10,5,17,8.5];
 
 name=[dirFigures,filesep,'Figure',num2str(figidx)];
 exportgraphics(fig,[name,'.eps']);
-exportgraphics(fig,[name,'.tiff']);
+exportgraphics(fig,[name,'.tiff'],'Resolution',600);
+savefig(fig,name);
 
 
 %% Fit model to data
 monofx=@(beta,X) beta(1).*prod(X.^(beta(2:end)),2);     %Monomial function, beta=[c,eps2,...]
 
 X=[flow.pi2,1+flow.pi3,flow.Ar2];   %Dependent variables
-beta0=[1e4,1,-3,0.1];               %Initial guess for beta
+beta0=[1e4,1,-2,0.1];               %Initial guess for beta
 
 mdl=fitnlm(X,flow.pi1,monofx,beta0);    %Fitted model
 
 
 %% Identify and remove outliers using Cook's distance
 %Plot Cook's distance
-fig=figure(906);
+fig=figure(907);
 clf(fig);
 
 plotDiagnostics(mdl,'cookd');
@@ -175,7 +176,7 @@ plotDiagnostics(mdl,'cookd');
 fig.Units='centimeters';
 fig.Position=[10,5,17,8.5];
 
-exportgraphics(fig,[dirFigures,filesep,'cookd.tiff']);
+exportgraphics(fig,[dirFigures,filesep,'cookd.tiff'],'Resolution',600);
 
 
 %Identify and remove outliers = >3*mean of Cook's distance
@@ -186,6 +187,10 @@ flow{outliers,2:end}=NaN;
 %% Refit model to clean data
 X1=[flow.pi2,1+flow.pi3,flow.Ar2];
 mdl1=fitnlm(X1,flow.pi1,monofx,beta0);
+
+
+%Relative standard errors
+SErel=mdl1.Coefficients.SE./mdl1.Coefficients.Estimate;
 
 
 

@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Chemical Engineering Science 2024
+%Chemical Engineering Research and Design 2025
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
@@ -160,22 +160,22 @@ function main=getProp(tab,c,flowNames,chambers)
     disp.mDotS=disp.mDotSand./(c.hRef.*c.l);
 
 
-    %Particle velocities
-    disp{:,w_pNames}=disp.mDotSand./(c.rho_p.*c.l.*(bed{:,hNames}+c.hBed));
-
-
-    %Fictional densities Phi=f(mean(eps))
+    %Fictional densities and particle velocities. Both=f(mean(eps))
     disp{:,PhiNames}=c.rho_p.*(bed{:,hNames}+c.hBed)/c.hRef;
+    disp{:,w_pNames}=disp.mDotSand./(c.rho_p.*c.l.*(bed{:,hNames}+c.hBed));
 
     for i=chambers
         j=num2str(i);
         switch i
-                case {1,2}
-                    disp{:,['Phi',j]}=disp{:,['Phi',j]}.*(1-mean(bed.eps1));
-                case {3,4}
-                    disp{:,['Phi',j]}=disp{:,['Phi',j]}.*(1-mean(bed.eps2));
-                case {5,6}
-                    disp{:,['Phi',j]}=disp{:,['Phi',j]}.*(1-mean(bed.eps3));
+            case {1,2}
+                disp{:,['Phi',j]}=disp{:,['Phi',j]}.*(1-mean(bed.eps1));
+                disp{:,['w_p',j]}=disp{:,['w_p',j]}./(1-mean(bed.eps1));
+            case {3,4}
+                disp{:,['Phi',j]}=disp{:,['Phi',j]}.*(1-mean(bed.eps2));
+                disp{:,['w_p',j]}=disp{:,['w_p',j]}./(1-mean(bed.eps2));
+            case {5,6}
+                disp{:,['Phi',j]}=disp{:,['Phi',j]}.*(1-mean(bed.eps3));
+                disp{:,['w_p',j]}=disp{:,['w_p',j]}./(1-mean(bed.eps3));
         end
     end
     

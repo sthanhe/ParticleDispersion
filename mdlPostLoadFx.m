@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Chemical Engineering Science 2024
+%Chemical Engineering Research and Design 2025
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
@@ -83,8 +83,8 @@ Y0=ones(1,nACs);    %PID I-value
 
 
 %% Simulation time
-minSimTime=240;      %Minimum simulation time (seconds)
-maxSimTime=600;    %Maximum simulation time (seconds)
+minSimTime=240;     %Minimum simulation time (seconds)
+maxSimTime=600;     %Maximum simulation time (seconds)
 statCond=1e-4;      %Condition for stationary status as a value of PhiDot
 
 
@@ -97,10 +97,10 @@ SetMan=false;
 
 
 %% Particle dispersion coefficients
-c=19030.1124724027;
-eps2=1.08175825313772;
-eps3=-3.62266055421733;
-epsAr=0.109738530498836;
+c=19317.8340011694;
+eps2=1.10169319091282;
+eps3=-2.04940397390448;
+epsAr=0.108571357573225;
 
 
 

@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Chemical Engineering Science 2024
+%Chemical Engineering Research and Design 2025
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
@@ -50,8 +50,8 @@ function postStatic(out,flow,x,xChambers,figidx,dirFigures)
 
 
     %Set up figure
-    fig912=figure(figidx);
-    clf(fig912);
+    fig915=figure(figidx);
+    clf(fig915);
     ax=gca();
     box(ax,'on');
     hold(ax,'on');
@@ -73,11 +73,12 @@ function postStatic(out,flow,x,xChambers,figidx,dirFigures)
     xlabel(ax,'Distance from Inlet (m)');
     ylabel(ax,'Bed Level (m)');
 
-    fig912.Units='centimeters';
-    fig912.Position=[0.02,12.18,17,8.5];
+    fig915.Units='centimeters';
+    fig915.Position=[0.02,12.18,17,8.5];
     ax.XLim=[0,max(x)];
 
-    exportgraphics(fig912,[dirFigures,filesep,'statLevels',num2str(figidx),'.tiff']);
+    exportgraphics(fig915,[dirFigures,filesep,'statLevels',num2str(figidx),'.tiff'],...
+        'Resolution',600);
 
 
     %% Fluidization
@@ -86,8 +87,8 @@ function postStatic(out,flow,x,xChambers,figidx,dirFigures)
 
 
     %Set up figure
-    fig913=figure(figidx+100);
-    clf(fig913);
+    fig916=figure(figidx+100);
+    clf(fig916);
     ax=gca();
     box(ax,'on');
 
@@ -113,11 +114,12 @@ function postStatic(out,flow,x,xChambers,figidx,dirFigures)
     title(ax,titleText,'Interpreter','latex');
     xlabel(ax,'Distance from Inlet (m)');
 
-    fig913.Units='centimeters';
-    fig913.Position=[0.02,0.83,17,8.5];
+    fig916.Units='centimeters';
+    fig916.Position=[0.02,0.83,17,8.5];
     ax.XLim=[0,max(x)];
 
-    exportgraphics(fig913,[dirFigures,filesep,'statFluidization',num2str(figidx),'.tiff']);
+    exportgraphics(fig916,[dirFigures,filesep,'statFluidization',num2str(figidx),'.tiff'],...
+        'Resolution',600);
 end
 
 

@@ -7,7 +7,7 @@
 %Thanheiser, S.; Haider, M.
 %Dispersion Model for Level Control of Bubbling Fluidized Beds with 
 %Particle Cross-Flow
-%Chemical Engineering Science 2024
+%Chemical Engineering Research and Design 2025
 %
 %All data, along with methodology reports and supplementary documentation, 
 %is published in the data repository:
@@ -101,7 +101,8 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     fig6.Position=[0.02,12.18,17,8.5];
     
 
-    exportgraphics(fig6,[dirFigures,filesep,'stepRespContr',num2str(figidx),'.tiff']);
+    exportgraphics(fig6,[dirFigures,filesep,'stepRespContr',num2str(figidx),'.tiff'],...
+        'Resolution',600);
 
 
     %% Other bed level responses
@@ -150,7 +151,8 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     ax2=axes(fig7,'Units','centimeters','Position',[12.5,1.25,3.6,3.59]);
     imshow([dirFigures,filesep,'StepResponseFigureInsert.tiff'],'Parent',ax2,'InitialMagnification','fit','Interpolation','bilinear','Reduce',false);
 
-    exportgraphics(fig7,[dirFigures,filesep,'stepRespAll',num2str(figidx),'.tiff']);
+    exportgraphics(fig7,[dirFigures,filesep,'stepRespAll',num2str(figidx),'.tiff'],...
+        'Resolution',600);
 
 
     %% Actuating value
@@ -159,8 +161,8 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
 
 
     %Set up figure
-    fig919=figure(figidx+900);
-    clf(fig919);
+    fig918=figure(figidx+900);
+    clf(fig918);
     ax=gca();
     box(ax,'on');
     hold(ax,'on');
@@ -179,11 +181,12 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
     xlabel(ax,'Time (HH:MM:SS)');
     ylabel(ax,'Valve Actuating Value (-)');
 
-    fig919.Units='centimeters';
-    fig919.Position=[0.02,0.83,17,8.5];
+    fig918.Units='centimeters';
+    fig918.Position=[0.02,0.83,17,8.5];
     ax.XLim=[0,max(dyn.Time)];
 
-    exportgraphics(fig919,[dirFigures,filesep,'stepRespValve',num2str(figidx),'.tiff']);
+    exportgraphics(fig918,[dirFigures,filesep,'stepRespValve',num2str(figidx),'.tiff'],...
+        'Resolution',600);
 
 
     %% Export graphics for paper separately
@@ -191,12 +194,18 @@ function postDynamic(out,flow,dyn,hBed,posBedLevel,figidx,dirFigures)
         delete([t6,t7]);    %Delete titles
 
         %Resave as tiff
-        exportgraphics(fig6,[dirFigures,filesep,'Figure6.tiff']);
-        exportgraphics(fig7,[dirFigures,filesep,'Figure7.tiff']);
+        exportgraphics(fig6,[dirFigures,filesep,'Figure6.tiff'],'Resolution',600);
+        exportgraphics(fig7,[dirFigures,filesep,'Figure7.tiff'],'Resolution',600);
 
         %Save as eps
-        exportgraphics(fig6,[dirFigures,filesep,'Figure6.eps']);
+        warning('off','MATLAB:print:ContentTypeImageSuggested');
+        exportgraphics(fig6,[dirFigures,filesep,'Figure6.eps'],'ContentType','vector');
         exportgraphics(fig7,[dirFigures,filesep,'Figure7.eps']);
+        warning('on','MATLAB:print:ContentTypeImageSuggested');
+
+        %Save as fig
+        savefig(fig6,[dirFigures,filesep,'Figure6']);
+        savefig(fig7,[dirFigures,filesep,'Figure7']);
     end
 
 
